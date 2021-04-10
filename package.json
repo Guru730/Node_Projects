@@ -1,0 +1,15 @@
+{
+  "name": "first",
+  "version": "1.0.0",
+  "description": "",
+  "main": "myApp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node myApp.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react-router": "^5.2.0"
+  }
+}
