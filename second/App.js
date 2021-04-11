@@ -5,6 +5,8 @@ const middleware = require('./middleware')
 const path = require('path')
 const bodyParser = require("body-parser");
 
+const database = require('./database');
+
 const server = app.listen(port, () => console.log("Server listening on port " + port));
 
 app.set("view engine", "pug");
