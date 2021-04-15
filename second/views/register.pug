@@ -3,28 +3,28 @@ extends layouts/login-layout.pug
 block content
     .loginContainer
         h1 Register
-        form#registrationform(method="post", onsubmit="event.preventDefault(); validateForm();")
+        form#registerForm(method="post", onsubmit="event.preventDefault(); validateForm();")
 
+            p.errorMessage #{errorMessage}
 
-            input(type="text", name="name", placeholder='first name', value=name required="")
-            input(type="text", name="lastname", placeholder='last name', value=lastname required="")
-            input(type="text", name="username", placeholder='username', value=username required="")
-            input(type="email", name="email", placeholder="email", value=email required="")
-            input#password(type="password", name="Password", placeholder="Password", required="")
-            input#confirmPassword(type="password", name="ConfirmPassword", placeholder="Password", required="")
-            input(type="submit", value="Register")
-        a(href="/login") Already have an account? login here.
+            input(type="text", name="firstName", placeholder="First name", value=firstName required="")
+            input(type="text", name="lastName", placeholder="Last name", value=lastName required="")
+            input(type="text", name="username", placeholder="Username", value=username required="")
+            input(type="email", name="email", placeholder="Email", value=email required="")
+            input#password(type="password", name="password", placeholder="Password", required="")
+            input#passwordConf(type="password", name="passwordConf", placeholder="Confirm password", required="")
+            input(type="submit", value="Login")
+
+        a(href="/login") Already have an account? Login here.
     
     script.
         var passwordField = document.getElementById("password")
-        var passwordConfirmField = document.getElementById('confirmPassword')
-    
-        var form = document.getElementById('registrationform')
-
+        var passwordConfirmField = document.getElementById("passwordConf")
+        var form = document.getElementById("registerForm")
 
         function validateForm() {
             if(passwordField.value != passwordConfirmField.value) {
-                alert("Password don't match. !Please try again")
+                alert("Passwords do not match. Please try again.")
             }
             else {
                 form.submit();
