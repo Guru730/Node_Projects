@@ -31,59 +31,79 @@ $("#submitPostButton").click(() => {
     })
 })
 
-function createPostHtml(postData) {
+$(document).on("click", ".likeButton", (event) => {
+    var button = $(event.target);
+    var postId = getPostIdFromElement(button);
+    
+    if(postId === undefined) return;
 
+    $.ajax({
+        url: `/api/posts/${postId}/like`,
+        type: "PUT",
+        success: (postData) => {
+            console.log(postData.likes.length);
+        }
+    })
+
+})
+
+function getPostIdFromElement(element) {
+    var isRoot = element.hasClass("post");
+    var rootElement = isRoot == true ? element : element.closest(".post");
+    var postId = rootElement.data().id;
+
+    if(postId === undefined) return alert("Post id undefined");
+
+    return postId;
+}
+
+function createPostHtml(postData) {
+    
     var postedBy = postData.postedBy;
-     
-    if(postedBy.id === undefined) {
-        console.log("user object is not populated");
+
+    if(postedBy._id === undefined) {
+        return console.log("User object not populated");
     }
 
     var displayName = postedBy.firstName + " " + postedBy.lastName;
-    var date = timeDifference(new Date(), new Date(postData.createdAt) );
+    var timestamp = timeDifference(new Date(), new Date(postData.createdAt));
 
-    
-
-
-    return `<div class='post'>
+    return `<div class='post' data-id='${postData._id}'>
 
                 <div class='mainContentContainer'>
                     <div class='userImageContainer'>
-                        <img src='${postedBy.profilePic}'}'>
+                        <img src='${postedBy.profilePic}'>
                     </div>
                     <div class='postContentContainer'>
-                     <div class='header'>
-                      <a href="/profile/${postedBy.username}" class="displayName">
-                         ${displayName}
-                       </a>
-                       <span class='username'>@${postedBy.username}</span>
-                        <span class='date'>${date}</span>
-
-                      </div>
+                        <div class='header'>
+                            <a href='/profile/${postedBy.username}' class='displayName'>${displayName}</a>
+                            <span class='username'>@${postedBy.username}</span>
+                            <span class='date'>${timestamp}</span>
+                        </div>
                         <div class='postBody'>
                             <span>${postData.content}</span>
                         </div>
                         <div class='postFooter'>
-                        <div class='postButtonContainer'>
-                        <button>
-                           <i class="far fa-comment"></i>
-                        </button>
-                        <button>
-                        <i class="fas fa-retweet"></i>
-                        </button>
-                        <button>
-                        <i class="far fa-heart"></i>
-                        </button>
-                        </div>
+                            <div class='postButtonContainer'>
+                                <button>
+                                    <i class='far fa-comment'></i>
+                                </button>
+                            </div>
+                            <div class='postButtonContainer'>
+                                <button>
+                                    <i class='fas fa-retweet'></i>
+                                </button>
+                            </div>
+                            <div class='postButtonContainer'>
+                                <button class='likeButton'>
+                                    <i class='far fa-heart'></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>`;
 }
-
-
-
-
 
 function timeDifference(current, previous) {
 
@@ -96,10 +116,9 @@ function timeDifference(current, previous) {
     var elapsed = current - previous;
 
     if (elapsed < msPerMinute) {
-        if(elapsed/1000 < 30) {
-            return "Just Now";
-        }
-         return Math.round(elapsed/1000) + ' seconds ago';   
+        if(elapsed/1000 < 30) return "Just now";
+        
+        return Math.round(elapsed/1000) + ' seconds ago';   
     }
 
     else if (elapsed < msPerHour) {
@@ -111,14 +130,14 @@ function timeDifference(current, previous) {
     }
 
     else if (elapsed < msPerMonth) {
-        return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+        return Math.round(elapsed/msPerDay) + ' days ago';   
     }
 
     else if (elapsed < msPerYear) {
-        return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+        return Math.round(elapsed/msPerMonth) + ' months ago';   
     }
 
     else {
-        return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+        return Math.round(elapsed/msPerYear ) + ' years ago';   
     }
 }
